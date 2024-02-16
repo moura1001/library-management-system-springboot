@@ -30,7 +30,7 @@ public class BookController {
         ).body(new BookView(savedBook));
     }
 
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<BookView> findBookByTitle(@RequestParam(value = "title") String title) {
         Book book = this.service.findBookByTitle(title);
         return ResponseEntity.ok(new BookView(book));
