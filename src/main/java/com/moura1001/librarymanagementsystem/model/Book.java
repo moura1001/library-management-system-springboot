@@ -33,6 +33,13 @@ public class Book {
         this.genre = genre;
     }
 
+    public Book(String title, String author, String isbn, GenreType genre) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.genre = genre;
+    }
+
     public Long getId() {
         return id;
     }

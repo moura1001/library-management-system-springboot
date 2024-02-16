@@ -42,8 +42,12 @@ public class BookService {
         }
     }
 
-    public void saveBook(Book book) throws BookException {
-        this.saveAllBooks(List.of(book));
+    public Book saveBook(Book book) throws BookException {
+        try {
+            return repository.save(book);
+        } catch (RuntimeException e) {
+            throw new BookException("internal error: " + e.getMessage());
+        }
     }
 
     public void saveAllBooks(List<Book> books) throws BookException {
