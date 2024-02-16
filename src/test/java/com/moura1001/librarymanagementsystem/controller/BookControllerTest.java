@@ -2,6 +2,7 @@ package com.moura1001.librarymanagementsystem.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moura1001.librarymanagementsystem.dto.BookDto;
+import com.moura1001.librarymanagementsystem.dto.BookUpdateDto;
 import com.moura1001.librarymanagementsystem.model.Book;
 import com.moura1001.librarymanagementsystem.model.GenreType;
 import com.moura1001.librarymanagementsystem.service.BookRepository;
@@ -107,5 +108,44 @@ class BookControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)));
+    }
+
+    @Test
+    void shouldUpdateBookAndReturnHTTP204Status() throws Exception {
+        // given
+        List<Book> books = repository.saveAll(EntityBuilder.buildBookList());
+        Book book = books.get(0);
+        BookUpdateDto bookUpdateDto = EntityBuilder.buildBookUpdateDto();
+        String valueAsString = objectMapper.writeValueAsString(bookUpdateDto);
+
+        // when
+        // then
+        mockMvc.perform(MockMvcRequestBuilders.patch(URL+"/"+book.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(valueAsString))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(book.getTitle()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.author").value(book.getAuthor()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isbn").value(bookUpdateDto.isbn()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(bookUpdateDto.genre().name()));
+    }
+
+    @Test
+    void shouldDeleteBookByAuthorAndReturnHTTP204Status() throws Exception {
+        // given
+        List<Book> books = repository.saveAll(EntityBuilder.buildBookList());
+        Book book = books.get(1);
+
+        // when
+        // then
+        mockMvc.perform(MockMvcRequestBuilders.delete(URL+"/"+book.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value("book successfully deleted"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get(URL+"?author="+book.getAuthor())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
     }
 }

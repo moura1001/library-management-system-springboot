@@ -1,11 +1,13 @@
 package com.moura1001.librarymanagementsystem.controller;
 
 import com.moura1001.librarymanagementsystem.dto.BookDto;
+import com.moura1001.librarymanagementsystem.dto.BookUpdateDto;
 import com.moura1001.librarymanagementsystem.dto.BookView;
 import com.moura1001.librarymanagementsystem.dto.BookViewList;
 import com.moura1001.librarymanagementsystem.model.Book;
 import com.moura1001.librarymanagementsystem.service.BookService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,5 +43,21 @@ public class BookController {
         List<BookViewList> books = this.service.findBookByAuthor(author).stream()
                 .map((book) -> new BookViewList(book)).collect(Collectors.toList());
         return ResponseEntity.ok(books);
+    }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<BookView> updateBook(
+            @PathVariable Long id,
+            @RequestBody @Valid BookUpdateDto bookDto
+    ) {
+        Book book = this.service.findBookById(id);
+        Book updatedBook = this.service.saveBook(bookDto.toEntity(book));
+        return ResponseEntity.ok(new BookView(updatedBook));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteBook(@PathVariable Long id) {
+        this.service.deleteBook(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("book successfully deleted");
     }
 }

@@ -1,6 +1,7 @@
 package com.moura1001.librarymanagementsystem.utils;
 
 import com.moura1001.librarymanagementsystem.dto.BookDto;
+import com.moura1001.librarymanagementsystem.dto.BookUpdateDto;
 import com.moura1001.librarymanagementsystem.model.Book;
 import com.moura1001.librarymanagementsystem.model.GenreType;
 
@@ -45,5 +46,16 @@ public class EntityBuilder {
 
     public static BookDto buildBookDto(String title, String author, String isbn, GenreType genre) {
         return new BookDto(title, author, isbn, genre);
+    }
+
+    public static BookUpdateDto buildBookUpdateDto() {
+        return EntityBuilder.buildBookUpdateDto(
+                "853361165X",
+                GenreType.FANTASY
+        );
+    }
+
+    public static BookUpdateDto buildBookUpdateDto(String isbn, GenreType genre) {
+        return new BookUpdateDto(isbn, genre);
     }
 }

@@ -22,6 +22,10 @@ public class BookService {
         }
     }
 
+    public Book findBookById(Long id) throws BookException {
+        return repository.findById(id).orElseThrow(() -> new BookException("book not found"));
+    }
+
     public Book findBookByTitle(String title) throws BookException {
         return repository.findBookByTitle(title).orElseThrow(() -> new BookException("book not found"));
     }
